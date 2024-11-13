@@ -2,9 +2,11 @@ use std::{fs, io, path::PathBuf};
 
 use chrono::{DateTime, Utc};
 use clap::Parser;
+use scheduler::{Schedule, Shift};
 
 mod scheduler;
-use scheduler::{Schedule, Shift};
+mod overrides;
+
 
 /// Scheduler for on-call shifts
 #[derive(Parser, Debug)]

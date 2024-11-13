@@ -1,6 +1,8 @@
 use chrono::{DateTime, TimeDelta, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::overrides::apply_overrides;
+
 
 type User = String;
 
@@ -19,9 +21,43 @@ pub struct Shift {
     end_at: DateTime<Utc>,
 }
 
+impl Shift {
+    /* Getter for start_at field */
+    pub fn start_at(&self) -> DateTime<Utc> {
+        self.start_at
+    }
+    
+    /* Getter for end_at field */
+    pub fn end_at(&self) -> DateTime<Utc> {
+        self.end_at
+    }
+    
+    /* Setter for start_at field - checks validity at runtime */
+    pub fn update_start_at(&mut self, start_at: DateTime<Utc>) {
+        self.start_at = start_at;
+        if !self.is_valid() {
+            panic!("{self:#?} is not valid");
+        }
+    }
+    
+    /* Setter for end_at field - checks validity at runtime */
+    pub fn update_end_at(&mut self, end_at: DateTime<Utc>) {
+        self.end_at = end_at;
+        if !self.is_valid() {
+            panic!("{self:#?} is not valid");
+        }
+    }
+    
+    /* Check if Shift is valid - i.e., starts before it ends */
+    pub fn is_valid(&self) -> bool {
+        self.start_at < self.end_at
+    }
+}
+
 /* Schedule all shifts */
-pub fn schedule_shifts(sched: Schedule, _overrides: Vec<Shift>, from: DateTime<Utc>, until: DateTime<Utc>) -> Vec<Shift> {
-    let shifts = generate_shifts(&sched, until);
+pub fn schedule_shifts(sched: Schedule, overrides: Vec<Shift>, from: DateTime<Utc>, until: DateTime<Utc>) -> Vec<Shift> {
+    let mut shifts = generate_shifts(&sched, until);
+    apply_overrides(&mut shifts, overrides);
     filter_shifts(shifts, from, until)
 }
 
@@ -52,8 +88,38 @@ fn generate_shifts(sched: &Schedule, until: DateTime<Utc>) -> Vec<Shift> {
 /* Filter out shifts not include in from - until timeframe */
 fn filter_shifts(shifts: Vec<Shift>, from: DateTime<Utc>, until: DateTime<Utc>) -> Vec<Shift> {
     shifts.into_iter()
-        .filter(|shift: &Shift| shift.start_at < shift.end_at) /* Filter out invalid shifts */
-        .filter(|shift: &Shift| from <= shift.start_at && shift.end_at <= until) /* Filter out shifts not within timeframe */
+        .filter(|shift: &Shift| shift.is_valid()) /* Filter out invalid shifts */
+        .filter(|shift: &Shift| from <= shift.start_at && shift.end_at <= until) /* Filter out shifts not within from - until */
         .collect::<Vec<Shift>>()
+}
+
+
+/* Perform a binary search to find the shift covering time given */
+pub fn find_shift(time: DateTime<Utc>, shifts: &[Shift]) -> Option<&Shift> {
+    let mid = shifts.len() / 2; 
+    let mid_shift = shifts.get(mid)?;
+
+    /* If middle shift contains time, return */
+    if (mid_shift.start_at()..=mid_shift.end_at()).contains(&time) {
+        return Some(mid_shift);
+    }
+
+    /* Split shift in two - left contains [start, mid), right contains [mid, end) */
+    let (left, right) = shifts.split_at(mid); 
+
+    return if time < mid_shift.start_at() {
+        /* If time is before mid_shift's start, recurse on left half */
+        find_shift(time, left)
+    } else {
+        /* Otherwise recurse on right half, sliced to exclude mid_shift */
+        find_shift(time, &right[1..]) 
+    };
+}
+
+/* Find the index of shift covering time given */
+pub fn find_shift_index(time: DateTime<Utc>, shifts: &[Shift]) -> Option<usize> {
+    //TODO: avoid inefficient loop to find index
+    let shift = find_shift(time, shifts)?;
+    shifts.iter().position(|s| s == shift) 
 }
 

@@ -94,14 +94,20 @@ fn filter_shifts(shifts: Vec<Shift>, from: DateTime<Utc>, until: DateTime<Utc>) 
 }
 
 
-/* Perform a binary search to find the shift covering time given */
+#[allow(dead_code)]
+/* Find the shift covering a given timestamp */
 pub fn find_shift(time: DateTime<Utc>, shifts: &[Shift]) -> Option<&Shift> {
+    find_shift_index(time, shifts).map(|i| &shifts[i])
+}
+
+/* Perform a binary search to find index of the shift covering a given timestamp */
+pub fn find_shift_index(time: DateTime<Utc>, shifts: &[Shift]) -> Option<usize> {
     let mid = shifts.len() / 2; 
     let mid_shift = shifts.get(mid)?;
 
-    /* If middle shift contains time, return */
+    /* If middle shift contains time, return mid index */
     if (mid_shift.start_at()..=mid_shift.end_at()).contains(&time) {
-        return Some(mid_shift);
+        return Some(mid);
     }
 
     /* Split shift in two - left contains [start, mid), right contains [mid, end) */
@@ -109,17 +115,10 @@ pub fn find_shift(time: DateTime<Utc>, shifts: &[Shift]) -> Option<&Shift> {
 
     return if time < mid_shift.start_at() {
         /* If time is before mid_shift's start, recurse on left half */
-        find_shift(time, left)
+        find_shift_index(time, left)
     } else {
         /* Otherwise recurse on right half, sliced to exclude mid_shift */
-        find_shift(time, &right[1..]) 
+        find_shift_index(time, &right[1..])
     };
-}
-
-/* Find the index of shift covering time given */
-pub fn find_shift_index(time: DateTime<Utc>, shifts: &[Shift]) -> Option<usize> {
-    //TODO: avoid inefficient loop to find index
-    let shift = find_shift(time, shifts)?;
-    shifts.iter().position(|s| s == shift) 
 }
 

@@ -1,3 +1,5 @@
+use std::fmt::{self, Display};
+
 use chrono::{DateTime, TimeDelta, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -19,6 +21,13 @@ pub struct Shift {
     user: User,
     start_at: DateTime<Utc>,
     end_at: DateTime<Utc>,
+}
+
+impl Display for Shift {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let fmt: &str = "%H:%M [%d-%m-%Y]";
+        write!(f, "{0:<50} {1} -> {2}", self.user, self.start_at.format(fmt), self.end_at.format(fmt))
+    }
 }
 
 impl Shift {

@@ -27,6 +27,10 @@ struct Args {
     /// When rendered schedule should end 
     #[arg(long)]
     until: DateTime<Utc>,
+
+    /// Pretty print the schedule to terminal
+    #[arg(short, long, default_value_t = false)]
+    pretty_print: bool,
 }
 
 
@@ -43,7 +47,17 @@ fn main() -> io::Result<()> {
     /* Schedule the shifts using schedule data and overrides, filtering to within from - until */
     let shifts: Vec<Shift> = scheduler::schedule_shifts(schedule, overrides, args.from, args.until);
 
-    println!("{}", serde_json::to_string_pretty(&shifts)?);
+    let out = if args.pretty_print {
+        shifts.into_iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<String>>()
+            .join("\n")
+    } else {
+        serde_json::to_string_pretty(&shifts)?
+    };
 
+    println!("{}", out);
+    
     Ok(())
 }
+

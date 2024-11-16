@@ -52,12 +52,12 @@ impl Args {
 
     /* Print warnings about invalid or empty json files */
     fn path_warnings(arg_name: &'static str, path: &PathBuf) {
-        if !path.try_exists().is_ok_and(|b| b) {
-            println!("Warning! --{arg_name}={:?} file can not be found", path);
-        }
-
-        if !fs::read_to_string(&path).is_ok_and(|s| !s.is_empty()) {
-            println!("Warning! --{arg_name}={:?} file is empty", path);
+        if let Ok(s) = fs::read_to_string(&path) {
+            if s.is_empty() {
+                println!("Warning! --{arg_name}={:?} file is empty", path);
+            }
+        } else {
+            println!("Warning! --{arg_name}={:?} file cannot be found", path);
         }
     }
 

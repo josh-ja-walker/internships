@@ -34,7 +34,7 @@ pub struct Shift {
 impl Display for Shift {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let fmt: &str = "%H:%M [%d-%m-%Y]";
-        write!(f, "{0:<50} {1} -> {2}", self.user, self.start_at.format(fmt), self.end_at.format(fmt))
+        write!(f, "{0:<20} {1} -> {2}", self.user, self.start_at.format(fmt), self.end_at.format(fmt))
     }
 }
 

@@ -20,22 +20,22 @@ struct Args {
     /// Path to .json file containing list of override shifts in priority descending order
     #[arg(long="overrides")]
     override_path: PathBuf,
+    
+    /// When rendered schedule should start
+    #[arg(long)]
+    from: DateTime<Utc>,
+    
+    /// When rendered schedule should end
+    #[arg(long)]
+    until: DateTime<Utc>,
+    
+    /// Pretty print the schedule to terminal
+    #[arg(short, long, default_value_t = false)]
+    pretty_print: bool,
 
     /// Optional path to an output file
     #[arg(short='O', long="outfile")]
     out: Option<PathBuf>,
-
-    /// When rendered schedule should start
-    #[arg(long)]
-    from: DateTime<Utc>,
-
-    /// When rendered schedule should end
-    #[arg(long)]
-    until: DateTime<Utc>,
-
-    /// Pretty print the schedule to terminal
-    #[arg(short, long, default_value_t = false)]
-    pretty_print: bool,
 }
 
 

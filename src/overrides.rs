@@ -7,7 +7,7 @@ pub fn apply_overrides(shifts: &mut Vec<Shift>, overrides: Vec<Shift>) {
         return;
     }
     
-    /* Populate shift_idxs with correct indices */
+    /* Apply each override in turn (assume overrides are given in ascending priority order) */
     for override_shift in overrides {
         apply_override(override_shift, shifts);
     }

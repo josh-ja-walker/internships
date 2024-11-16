@@ -9,7 +9,9 @@ It must be run with the following arguments:
 - **`--from`** - the time from which to start listing entries
 - **`--until`** - the time until which to listing entries
 
-There is an optional `--pretty-print` flag used to print the schedule in a more user friendly format, rather than in JSON format.
+There are two **optional** arguments:
+- **`--pretty-print`** - flag used to print the schedule in a more user friendly format, rather than in JSON.
+- **`--outfile, -O`** - path to an output file that the schedule is written to. The saved format is also determined by the `--pretty-print` flag.
 
 The schedule will be truncated based on the `from`/`until` parameters. For example, if an entry was from 1pm November 17 -> 1pm November 19th, 
 but `--from` was given as 2pm November 18th, the entry should instead be returned as 2pm November 18th -> 1pm November 19th.
@@ -29,8 +31,10 @@ Options:
       --from <FROM>                When rendered schedule should start
       --until <UNTIL>              When rendered schedule should end
   -p, --pretty-print               Pretty print the schedule to terminal
+  -O, --outfile <OUT>              Optional path to an output file
   -h, --help                       Print help
   -V, --version                    Print version
+
 ```
 
 

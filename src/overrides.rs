@@ -30,15 +30,14 @@ fn apply_override(override_shift: Shift, shifts: &mut Vec<Shift>) {
         /* Duplicate the shift to create post shift */
         clamped_post = clamped_prev + 1;
         shifts.insert(clamped_post, shifts[clamped_prev].clone());
-    } else {
-        /* Otherwise remove all entirely overridden shifts */
-        shifts.drain((clamped_prev + 1)..clamped_post);
     }
     
     /* Modify existing shifts */
     shifts[clamped_prev].set_end_at(override_shift.start_at()); /* End previous shift earlier */
     shifts[clamped_post].set_start_at(override_shift.end_at()); /* Start next shift later */
 
+    /* Remove all entirely overridden shifts */
+    shifts.drain((clamped_prev + 1)..clamped_post);
 
     /* Insert override - ensure override is inserted after the previous shift or at 0 if prev is None */
     shifts.insert(prev_shift.map_or(0, |i| i + 1), override_shift);

@@ -52,25 +52,16 @@ impl Shift {
     /* Safe setter for start_at field - prints warnings at runtime */
     pub fn set_start_at(&mut self, start_at: DateTime<Utc>) {
         self.start_at = start_at;
-        self.print_warning();
     }
     
     /* Safe setter for end_at field - prints warnings at runtime */
     pub fn set_end_at(&mut self, end_at: DateTime<Utc>) {
         self.end_at = end_at;
-        self.print_warning();
     }
     
     /* Check if Shift is valid - i.e., starts before it ends */
     pub fn is_valid(&self) -> bool {
         self.start_at < self.end_at
-    }
-    
-    /* Check if Shift is valid - i.e., starts before it ends */
-    fn print_warning(&self) {
-        if !self.is_valid() {
-            println!("Warning! {self} is an invalid shift");
-        }
     }
 }
 

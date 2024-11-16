@@ -3,6 +3,10 @@ use crate::{helpers, scheduler::Shift};
 
 /* Apply overrides to shift schedule */
 pub fn apply_overrides(shifts: &mut Vec<Shift>, overrides: Vec<Shift>) {
+    if shifts.is_empty() || overrides.is_empty() {
+        return;
+    }
+    
     /* List of indices of shifts before and after each override */
     let mut shift_idxs: Vec<(Option<usize>, Option<usize>)> = vec![];
 

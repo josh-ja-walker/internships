@@ -21,6 +21,10 @@ struct Args {
     #[arg(long="overrides")]
     override_path: PathBuf,
 
+    /// Path to .json file containing list of override shifts in priority descending order
+    #[arg(short='O', long="outfile")]
+    out: Option<PathBuf>,
+
     /// When rendered schedule should start
     #[arg(long)]
     from: DateTime<Utc>,
@@ -99,6 +103,7 @@ fn main() -> io::Result<()> {
 	let args = Args::parse(); /* Parse command-line arguments */
 
     let pretty_print: bool = args.pretty_print; /* Copy pretty_print value before destructing args */
+    let outfile: Option<PathBuf> = args.out.clone(); /* Copy out value before destructing args */
     let (schedule, overrides, from, until) = args.unpack()?; /* Destruct args and deserialise json files */
     
     /* Perform scheduling algorithm */
@@ -123,6 +128,12 @@ fn main() -> io::Result<()> {
 
     /* Print schedule to stdout */
     println!("{}", out);
+
+    /* Write to output file */
+    if let Some(path) = outfile {
+        println!("Schedule saved as '{}'", path.display());
+        return fs::write(path, out);
+    }
 
     Ok(())
 }

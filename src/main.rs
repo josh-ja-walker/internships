@@ -17,7 +17,7 @@ struct Args {
     #[arg(long="schedule")]
     schedule_path: PathBuf,
 
-    /// Path to .json file containing list of override shifts in priority descending order
+    /// Path to .json file containing list of override shifts
     #[arg(long="overrides")]
     override_path: PathBuf,
     
@@ -81,8 +81,7 @@ impl Args {
         self.schedule_warnings(&schedule);
     
         /* Parse list of overrides from .json file */
-        let mut overrides: Vec<Shift> = serde_json::from_str(&fs::read_to_string(&self.override_path)?)?;
-        overrides.reverse(); /* Assumed overrides are in descending priority order - reverse so most important override applied last */
+        let overrides: Vec<Shift> = serde_json::from_str(&fs::read_to_string(&self.override_path)?)?;
     
         Ok((schedule, overrides, self.from, self.until))
     }

@@ -40,7 +40,7 @@ pub fn find_shift(time: DateTime<Utc>, shifts: &[Shift]) -> Option<&Shift> {
 /* Perform a binary search to find index of the shift covering a given timestamp */
 pub fn find_shift_index(time: DateTime<Utc>, shifts: &[Shift]) -> Option<usize> {
     let mid = shifts.len() / 2; 
-    let mid_shift = shifts.get(mid)?;
+    let mid_shift = shifts.get(mid)?; /* Returns None if shifts is empty */
 
     /* If middle shift contains time, return mid index */
     if (mid_shift.start_at()..=mid_shift.end_at()).contains(&time) {

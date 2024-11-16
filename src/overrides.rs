@@ -7,25 +7,17 @@ pub fn apply_overrides(shifts: &mut Vec<Shift>, overrides: Vec<Shift>) {
         return;
     }
     
-    /* List of indices of shifts before and after each override */
-    let mut shift_idxs: Vec<(Option<usize>, Option<usize>)> = vec![];
-
     /* Populate shift_idxs with correct indices */
-    for override_shift in &overrides {
-        let prev_index: Option<usize> = helpers::find_shift_index(override_shift.start_at(), &shifts);
-        let post_index: Option<usize> = helpers::find_shift_index(override_shift.end_at(), &shifts);
-
-        shift_idxs.push((prev_index, post_index));
-    }
-
-    /* Add each override, modifying previous and following shifts */
-    for ((prev_shift, post_shift), override_shift) in shift_idxs.iter().zip(overrides) {
-        apply_override(*prev_shift, override_shift, *post_shift, shifts);
+    for override_shift in overrides {
+        apply_override(override_shift, shifts);
     }
 }
 
 /* Apply single override */
-fn apply_override(prev_shift: Option<usize>, override_shift: Shift, post_shift: Option<usize>, shifts: &mut Vec<Shift>) {
+fn apply_override(override_shift: Shift, shifts: &mut Vec<Shift>) {
+    let prev_shift: Option<usize> = helpers::find_shift_index(override_shift.start_at(), &shifts);
+    let post_shift: Option<usize> = helpers::find_shift_index(override_shift.end_at(), &shifts);
+    
     /* Helper function to unpack and clamp index of shift to avoid index out of range errors */
     let clamp_idx = |idx: Option<usize>| (idx.unwrap_or(0)).clamp(0, shifts.len() - 1);
     

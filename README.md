@@ -1,9 +1,9 @@
 ## Usage
 
 The script called **`./render-schedule`** implements a shift scheduling algorithm.
+It is a `.exe` file compiled from Rust using [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html). To compile for yourself, install `cargo` and run `cargo build --release`.
 
-It must be run with the following arguments:
-
+The script must be run with the following arguments:
 - **`--schedule`** - JSON file containing a definition of a schedule
 - **`--overrides`** - JSON file containing an array of overrides
 - **`--from`** - the time from which to start listing entries

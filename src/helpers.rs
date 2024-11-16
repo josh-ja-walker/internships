@@ -43,7 +43,7 @@ pub fn find_shift_index(time: DateTime<Utc>, shifts: &[Shift]) -> Option<usize> 
     let mid_shift = shifts.get(mid)?; /* Returns None if shifts is empty */
 
     /* If middle shift contains time, return mid index */
-    if (mid_shift.start_at()..=mid_shift.end_at()).contains(&time) {
+    if mid_shift.is_valid() && (mid_shift.start_at()..=mid_shift.end_at()).contains(&time) {
         return Some(mid);
     }
 

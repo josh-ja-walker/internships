@@ -3,11 +3,10 @@ use std::fmt::{self, Display};
 use chrono::{DateTime, TimeDelta, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::{helpers, overrides};
-
 
 type User = String;
 
+/* Schedule data defined in json file */
 #[derive(Debug, Deserialize)]
 pub struct Schedule {
     users: Vec<User>,
@@ -16,11 +15,14 @@ pub struct Schedule {
 }
 
 impl Schedule {
+    /* Safe getter for start date */
     pub fn handover_start_at(&self) -> DateTime<Utc> {
         self.handover_start_at
     }
 }
 
+
+/* Shift structure used for overrides and output */
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Shift {
     user: User,
@@ -28,6 +30,7 @@ pub struct Shift {
     end_at: DateTime<Utc>,
 }
 
+/* Pretty print formatter */
 impl Display for Shift {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let fmt: &str = "%H:%M [%d-%m-%Y]";
@@ -46,13 +49,13 @@ impl Shift {
         self.end_at
     }
     
-    /* Setter for start_at field - checks validity at runtime */
+    /* Safe setter for start_at field - prints warnings at runtime */
     pub fn set_start_at(&mut self, start_at: DateTime<Utc>) {
         self.start_at = start_at;
         self.print_warning();
     }
     
-    /* Setter for end_at field - checks validity at runtime */
+    /* Safe setter for end_at field - prints warnings at runtime */
     pub fn set_end_at(&mut self, end_at: DateTime<Utc>) {
         self.end_at = end_at;
         self.print_warning();
@@ -72,16 +75,8 @@ impl Shift {
 }
 
 
-/* Schedule all shifts */
-pub fn schedule_shifts(sched: Schedule, overrides: Vec<Shift>, from: DateTime<Utc>, until: DateTime<Utc>) -> Vec<Shift> {
-    let mut shifts = generate_shifts(&sched, until);
-    overrides::apply_overrides(&mut shifts, overrides);
-    helpers::truncate_shifts(shifts, &sched, from, until)
-}
-
-
 /* Generate normal (without overrides) shift schedule according to schedule data */
-fn generate_shifts(schedule: &Schedule, until: DateTime<Utc>) -> Vec<Shift> {
+pub fn schedule_shifts(schedule: &Schedule, until: DateTime<Utc>) -> Vec<Shift> {
     let mut shifts: Vec<Shift> = vec![]; /* List of shifts to return */
     let sched_length: i64 = (until - schedule.handover_start_at).num_days(); /* Length of schedule according to start_at and until */
 

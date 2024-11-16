@@ -21,7 +21,7 @@ struct Args {
     #[arg(long="overrides")]
     override_path: PathBuf,
 
-    /// Path to .json file containing list of override shifts in priority descending order
+    /// Optional path to an output file
     #[arg(short='O', long="outfile")]
     out: Option<PathBuf>,
 

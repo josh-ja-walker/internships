@@ -42,7 +42,7 @@ impl Shift {
     }
     
     /* Setter for start_at field - checks validity at runtime */
-    pub fn update_start_at(&mut self, start_at: DateTime<Utc>) {
+    pub fn set_start_at(&mut self, start_at: DateTime<Utc>) {
         self.start_at = start_at;
         if !self.is_valid() {
             panic!("{self:#?} is not valid");
@@ -50,7 +50,7 @@ impl Shift {
     }
     
     /* Setter for end_at field - checks validity at runtime */
-    pub fn update_end_at(&mut self, end_at: DateTime<Utc>) {
+    pub fn set_end_at(&mut self, end_at: DateTime<Utc>) {
         self.end_at = end_at;
         if !self.is_valid() {
             panic!("{self:#?} is not valid");

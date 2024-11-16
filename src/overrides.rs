@@ -40,8 +40,8 @@ fn apply_override(prev_shift: Option<usize>, override_shift: Shift, post_shift: 
     }
     
     /* Modify existing shifts */
-    shifts[clamped_prev].update_end_at(override_shift.start_at()); /* End previous shift earlier */
-    shifts[clamped_post].update_start_at(override_shift.end_at()); /* Start next shift later */
+    shifts[clamped_prev].set_end_at(override_shift.start_at()); /* End previous shift earlier */
+    shifts[clamped_post].set_start_at(override_shift.end_at()); /* Start next shift later */
 
 
     /* Insert override - ensure override is inserted after the previous shift or at 0 if prev is None */

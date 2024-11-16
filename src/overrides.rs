@@ -1,4 +1,4 @@
-use crate::scheduler::{find_shift_index, Shift};
+use crate::{helpers, scheduler::Shift};
 
 
 /* Apply overrides to shift schedule */
@@ -8,8 +8,8 @@ pub fn apply_overrides(shifts: &mut Vec<Shift>, overrides: Vec<Shift>) {
 
     /* Populate shift_idxs with correct indices */
     for override_shift in &overrides {
-        let prev_index: Option<usize> = find_shift_index(override_shift.start_at(), &shifts);
-        let post_index: Option<usize> = find_shift_index(override_shift.end_at(), &shifts);
+        let prev_index: Option<usize> = helpers::find_shift_index(override_shift.start_at(), &shifts);
+        let post_index: Option<usize> = helpers::find_shift_index(override_shift.end_at(), &shifts);
 
         shift_idxs.push((prev_index, post_index));
     }
